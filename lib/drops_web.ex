@@ -51,6 +51,15 @@ defmodule DropsWeb do
     end
   end
 
+  def surface_live_view do
+    quote do
+      use Surface.LiveView,
+        layout: {DropsWeb.LayoutView, "live.html"}
+
+      unquote(view_helpers())
+    end
+  end
+
   def live_component do
     quote do
       use Phoenix.LiveComponent

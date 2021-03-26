@@ -1,0 +1,73 @@
+<h1>Basic Uploads Example</h1>
+<details>
+  <summary>The demo showcases the following features of live uploads:</summary>
+  <ul>
+    <li><code>allow_upload/3</code> specification</li>
+    <li><code>live_file_input/1</code></li>
+    <li><code>live_img_preview/2</code></li>
+    <li><code>upload_errors/2</code></li>
+    <li><code>entry.progress</code></li>
+    <li><code>cancel_upload/3</code></li>
+    <li><code>consume_uploaded_entries/3</code> on submit</li>
+  </ul>
+</details>
+
+<section class="row upload-demo">
+  <section class="column">
+    <h2>Upload</h2>
+
+    <p>You may add up to {{ @uploads.exhibit.max_entries }} exhibits at a time.</p>
+
+    <form id="basic-uploads-form" phx-change="validate" phx-submit="save">
+      {{ live_file_input @uploads.exhibit }}
+      <button type="submit" phx-disable-with="Uploading...">Upload</button>
+    </form>
+
+    <section class="pending-uploads" phx-drop-target="{{ @uploads.exhibit.ref }}" style="min-height: 100%;">
+
+      <h3>Pending Uploads</h3>
+      <p>You can drag and drop files here, too.</p>
+
+      <p :if={{ error = DropsWeb.LiveUploadHelpers.upload_error(@uploads.exhibit) }} class="alert alert-danger">{{ DropsWeb.LiveUploadHelpers.error_to_string(error) }}</p>
+
+      <For each={{ entry <- @uploads.exhibit.entries }}>
+        <div class="upload-entry">
+          <progress value="{{ entry.progress }}" class="upload-entry__progress" id="{{ entry.ref }}-progress" max="100">
+            {{ entry.progress }}%
+          </progress>
+
+          <div class="upload-entry__details">
+            <figure>
+              {{ live_img_preview entry }}
+              <figcaption>{{ entry.client_name }} ({{ entry.client_size }})</figcaption>
+            </figure>
+
+            <a href="#" :on-click="cancel-upload" phx-value-ref="{{ entry.ref }}" class="upload-entry__cancel">&times;</a>
+          </div>
+
+          <p :for={{ err <- upload_errors(@uploads.exhibit, entry) }} class="alert alert-danger">
+            {{ DropsWeb.LiveUploadHelpers.error_to_string(err) }}
+          </p>
+
+        </div>
+
+      </For>
+    </section>
+
+  </section>
+
+  <section class="column">
+    <h2>My Exhibits</h2>
+
+    <output form="basic-uploads-form" for="{{ @uploads.exhibit.ref }}">
+    <For each={{ static_path <- @uploaded_files }}>
+      <figure>
+        <img src="{{ static_path }}" />
+        <figcaption>{{ static_path }}</figcaption>
+      </figure>
+    </For>
+   </output>
+
+  </section>
+
+</section>

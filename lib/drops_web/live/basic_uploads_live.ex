@@ -1,13 +1,14 @@
 defmodule DropsWeb.BasicUploadsLive do
-  use DropsWeb, :live_view
+  use DropsWeb, :surface_live_view
 
-  @impl true
-  def mount(_params, _session, socket) do
-    {:ok,
-     socket
-     |> assign(:uploaded_files, [])
-     |> allow_upload(:exhibit, accept: ~w(video/* image/*), max_entries: 6, chunk_size: 1_024)}
-  end
+  data(exhibit, :upload,
+    accept: ~w(video/* image/*),
+    max_entries: 6,
+    chunk_size: 1_024,
+    auto_upload: true
+  )
+
+  data(uploaded_files, :list, default: [])
 
   @impl true
   def handle_event("validate", _params, socket) do

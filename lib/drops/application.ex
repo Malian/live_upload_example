@@ -12,7 +12,7 @@ defmodule Drops.Application do
 
     children = [
       # Start the Ecto repository
-      Drops.Repo,
+      # Drops.Repo,
       # Start the Telemetry supervisor
       DropsWeb.Telemetry,
       # Start the PubSub system
